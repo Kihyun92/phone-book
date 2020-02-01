@@ -1,58 +1,78 @@
-import React, { Component } from "react";
-import PhoneForm from "./components/PhoneForm";
-import PhoneInfoList from "./components/PhoneInfoList";
+import React, { Component } from 'react';
+import PhoneForm from './components/PhoneForm';
+import PhoneInfoList from './components/PhoneInfoList';
 class App extends Component {
-    id = 2;
-    state = {
-        information: [
-            {
-                id: 0,
-                name: "김기현",
-                phone: "010-5555-1111"
-            },
-            {
-                id: 1,
-                name: "스타벅스",
-                phone: "010-1234-0000"
-            }
-        ]
-    };
+	id = 2;
+	state = {
+		information: [
+			{
+				id: 0,
+				name: '김기현',
+				phone: '010-5555-1111'
+			},
+			{
+				id: 1,
+				name: '스타벅스',
+				phone: '010-1234-0000'
+			}
+		],
+		keyword: ''
+	};
 
-    handleCreate = data => {
-        const { information } = this.state;
-        this.setState({
-            information: information.concat({ id: this.id++, ...data })
-        });
-    };
+	handleChange = e => {
+		this.setState({
+			keyword: e.target.value
+		});
+	};
 
-    handleRemove = id => {
-        const { information } = this.state;
-        this.setState({
-            information: information.filter(info => info.id !== id)
-        });
-    };
+	handleCreate = data => {
+		const { information } = this.state;
+		this.setState({
+			information: information.concat({ id: this.id++, ...data })
+		});
+	};
 
-    handleUpdate = (id, data) => {
-        const { information } = this.state;
-        this.setState({
-            information: information.map(info =>
-                info.id === id ? { ...info, ...data } : info
-            )
-        });
-    };
+	handleRemove = id => {
+		const { information } = this.state;
+		this.setState({
+			information: information.filter(info => info.id !== id)
+		});
+	};
 
-    render() {
-        return (
-            <div>
-                <PhoneForm onCreate={this.handleCreate} />
-                <PhoneInfoList
-                    data={this.state.information}
-                    onRemove={this.handleRemove}
-                    onUpdate={this.handleUpdate}
-                />
-            </div>
-        );
-    }
+	handleUpdate = (id, data) => {
+		const { information } = this.state;
+		this.setState({
+			information: information.map(info =>
+				info.id === id ? { ...info, ...data } : info
+			)
+		});
+	};
+
+	render() {
+		const { information, keyword } = this.state;
+		const filteredList = information.filter(
+			info => info.name.indexOf(keyword) !== -1
+		);
+
+		return (
+			<div>
+				<PhoneForm onCreate={this.handleCreate} />
+				<p>
+					<input
+						placeholder="검색 할 이름을 입력하세요."
+						onChange={this.handleChange}
+						value={keyword}
+					/>
+				</p>
+				<hr />
+				<PhoneInfoList
+					data={filteredList}
+					onRemove={this.handleRemove}
+					onUpdate={this.handleUpdate}
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
